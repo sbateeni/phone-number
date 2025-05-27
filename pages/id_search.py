@@ -9,14 +9,14 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-class VaccineCertificateScraper:
+class IDSearcher:
     def __init__(self):
         self.base_url = "https://vaccine.moh.ps/certificate"
         self.headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
         }
     
-    def get_certificate(self, national_id):
+    def get_info(self, national_id):
         try:
             # Setup Chrome options
             chrome_options = Options()
@@ -42,8 +42,8 @@ class VaccineCertificateScraper:
             # Wait for results to load
             time.sleep(3)
             
-            # Extract certificate information
-            certificate = {
+            # Extract basic information only
+            info = {
                 'national_id': national_id,
                 'name': self._get_element_text(driver, "name_span"),
                 'date_of_birth': self._get_element_text(driver, "dob_span"),
@@ -53,10 +53,10 @@ class VaccineCertificateScraper:
             }
             
             driver.quit()
-            return certificate
+            return info
             
         except Exception as e:
-            print(f"Error getting certificate: {str(e)}")
+            print(f"Error getting info: {str(e)}")
             if 'driver' in locals():
                 driver.quit()
             return None
@@ -77,10 +77,10 @@ def show_id_search():
     if st.button("استعلام"):
         if national_id:
             with st.spinner("جاري البحث..."):
-                scraper = VaccineCertificateScraper()
-                certificate = scraper.get_certificate(national_id)
+                searcher = IDSearcher()
+                info = searcher.get_info(national_id)
                 
-                if certificate and any(certificate.values()):
+                if info and any(info.values()):
                     # Create two columns
                     col1, col2 = st.columns(2)
                     
@@ -89,10 +89,10 @@ def show_id_search():
                         st.markdown("<div class='info-title'>معلومات الشخص</div>", unsafe_allow_html=True)
                         
                         # Display personal information
-                        st.markdown(f"<p><span class='info-label'>رقم الهوية:</span> <span class='info-value'>{certificate['national_id']}</span></p>", unsafe_allow_html=True)
-                        st.markdown(f"<p><span class='info-label'>الاسم:</span> <span class='info-value'>{certificate['name']}</span></p>", unsafe_allow_html=True)
-                        st.markdown(f"<p><span class='info-label'>تاريخ الميلاد:</span> <span class='info-value'>{certificate['date_of_birth']}</span></p>", unsafe_allow_html=True)
-                        st.markdown(f"<p><span class='info-label'>الجنس:</span> <span class='info-value'>{certificate['gender']}</span></p>", unsafe_allow_html=True)
+                        st.markdown(f"<p><span class='info-label'>رقم الهوية:</span> <span class='info-value'>{info['national_id']}</span></p>", unsafe_allow_html=True)
+                        st.markdown(f"<p><span class='info-label'>الاسم:</span> <span class='info-value'>{info['name']}</span></p>", unsafe_allow_html=True)
+                        st.markdown(f"<p><span class='info-label'>تاريخ الميلاد:</span> <span class='info-value'>{info['date_of_birth']}</span></p>", unsafe_allow_html=True)
+                        st.markdown(f"<p><span class='info-label'>الجنس:</span> <span class='info-value'>{info['gender']}</span></p>", unsafe_allow_html=True)
                         st.markdown("</div>", unsafe_allow_html=True)
                     
                     with col2:
@@ -100,8 +100,8 @@ def show_id_search():
                         st.markdown("<div class='info-title'>معلومات الاتصال</div>", unsafe_allow_html=True)
                         
                         # Display contact information
-                        st.markdown(f"<p><span class='info-label'>الهاتف المحمول:</span> <span class='info-value'>{certificate['mobile']}</span></p>", unsafe_allow_html=True)
-                        st.markdown(f"<p><span class='info-label'>المحافظة:</span> <span class='info-value'>{certificate['district']}</span></p>", unsafe_allow_html=True)
+                        st.markdown(f"<p><span class='info-label'>الهاتف المحمول:</span> <span class='info-value'>{info['mobile']}</span></p>", unsafe_allow_html=True)
+                        st.markdown(f"<p><span class='info-label'>المحافظة:</span> <span class='info-value'>{info['district']}</span></p>", unsafe_allow_html=True)
                         st.markdown("</div>", unsafe_allow_html=True)
                 else:
                     st.error("لم يتم العثور على معلومات للرقم المدخل")
