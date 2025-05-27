@@ -1,0 +1,4 @@
+chromium
+chromium-driver
+python3-dev
+build-essential 
