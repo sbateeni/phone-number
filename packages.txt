@@ -1,5 +1,9 @@
-chromium-browser
-chromium-chromedriver
+chromium
+chromium-driver
 python3-dev
 build-essential
-xvfb 
+xvfb
+libglib2.0-0
+libnss3
+libgconf-2-4
+libfontconfig1 
