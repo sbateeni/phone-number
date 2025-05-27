@@ -5,9 +5,12 @@ import json
 import time
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from webdriver_manager.chrome import ChromeDriverManager
+import os
 
 class IDSearcher:
     def __init__(self):
@@ -23,9 +26,15 @@ class IDSearcher:
             chrome_options.add_argument('--headless')
             chrome_options.add_argument('--no-sandbox')
             chrome_options.add_argument('--disable-dev-shm-usage')
+            chrome_options.add_argument('--disable-gpu')
+            chrome_options.add_argument('--disable-extensions')
+            chrome_options.add_argument('--disable-software-rasterizer')
             
-            # Initialize the driver
-            driver = webdriver.Chrome(options=chrome_options)
+            # Set up ChromeDriver service
+            service = Service()
+            
+            # Initialize the driver with service and options
+            driver = webdriver.Chrome(service=service, options=chrome_options)
             
             # Navigate to the certificate page
             driver.get(self.base_url)
@@ -56,7 +65,7 @@ class IDSearcher:
             return info
             
         except Exception as e:
-            print(f"Error getting info: {str(e)}")
+            st.error(f"حدث خطأ أثناء البحث: {str(e)}")
             if 'driver' in locals():
                 driver.quit()
             return None
