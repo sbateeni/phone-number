@@ -4,37 +4,33 @@ from bs4 import BeautifulSoup
 import json
 import time
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.firefox.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from webdriver_manager.chrome import ChromeDriverManager
 import os
 
 class IDSearcher:
     def __init__(self):
         self.base_url = "https://vaccine.moh.ps/certificate"
         self.headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0'
         }
     
     def get_info(self, national_id):
         try:
-            # Setup Chrome options
-            chrome_options = Options()
-            chrome_options.add_argument('--headless')
-            chrome_options.add_argument('--no-sandbox')
-            chrome_options.add_argument('--disable-dev-shm-usage')
-            chrome_options.add_argument('--disable-gpu')
-            chrome_options.add_argument('--disable-extensions')
-            chrome_options.add_argument('--disable-software-rasterizer')
+            # Setup Firefox options
+            firefox_options = Options()
+            firefox_options.add_argument('--headless')
+            firefox_options.add_argument('--no-sandbox')
+            firefox_options.add_argument('--disable-dev-shm-usage')
             
-            # Set up ChromeDriver service
+            # Set up Firefox service
             service = Service()
             
             # Initialize the driver with service and options
-            driver = webdriver.Chrome(service=service, options=chrome_options)
+            driver = webdriver.Firefox(service=service, options=firefox_options)
             
             # Navigate to the certificate page
             driver.get(self.base_url)
